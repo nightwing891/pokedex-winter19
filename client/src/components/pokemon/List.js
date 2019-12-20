@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from 'semantic-ui-react';
 import Pokemon from './Pokemon';
 
-const List = ({ pokemons }) => (
+const List = ({ pokemons, releasePokemon, updatePokemon }) => (
   <>
     <Table celled>
       <Table.Header>
@@ -13,6 +13,7 @@ const List = ({ pokemons }) => (
           <Table.HeaderCell>Moves</Table.HeaderCell>
           <Table.HeaderCell>Weight</Table.HeaderCell>
           <Table.HeaderCell>Height</Table.HeaderCell>
+          <Table.HeaderCell>Actions</Table.HeaderCell>
         </Table.Row>
       </Table.Header>
 
@@ -22,6 +23,8 @@ const List = ({ pokemons }) => (
             <Pokemon
               key={p.id} 
               {...p}
+              releasePokemon={releasePokemon}
+              updatePokemon={updatePokemon}
             />
           )
         }

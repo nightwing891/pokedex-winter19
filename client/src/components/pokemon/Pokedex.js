@@ -34,12 +34,33 @@ class Pokedex extends Component {
 
   updatePokemon = (id, pokemon) => {
     // update to the back end
-    // update it in our state
+    axios.put(`/api/pokemons/${id}`, pokemon)
+      .then( res => {
+        // update it in our state
+        const pokemons = this.state.pokemons.map( p => {
+          if (p.id === id) {
+            return res.data
+          }
+          return p 
+        })
+        this.setState({ pokemons })
+      })
+      .catch( err => {
+        console.log(err)
+      })
   }
 
   releasePokemon = (id) => {
     // delete in the back end
-    // delete in the state
+    axios.delete(`/api/pokemons/${id}`)
+      .then(res => {
+        // delete in the state
+        const { pokemons } = this.state
+        this.setState({ pokemons: pokemons.filter( p => p.id !== id)})
+      })
+      .catch( err => {
+        console.log(err)
+      }) 
   }
 
   render() {
@@ -53,7 +74,7 @@ class Pokedex extends Component {
           :
           <button onClick={this.toggleAdd}>Add Pokemon</button>
         }
-        <List pokemons={this.state.pokemons} />
+        <List pokemons={this.state.pokemons} releasePokemon={this.releasePokemon} updatePokemon={this.updatePokemon} />
       </>
     )
   }

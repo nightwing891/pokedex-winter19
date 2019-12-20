@@ -11,6 +11,13 @@ class PokeForm extends Component {
     height: '' 
   }
 
+  componentDidMount() {
+    if (this.props.id) {
+      const { name, pokemon_type, level, moves, weight, height } = this.props
+      this.setState({ name, pokemon_type, level, moves, weight, height })
+    }
+  }
+
   handleChange = (e) => {
     const { name, value } = e.target
     this.setState({ [name]: value })
@@ -18,8 +25,13 @@ class PokeForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    this.props.addPokemon(this.state)
-    this.props.toggleAdd()
+    if (this.props.id) {
+      this.props.updatePokemon( this.props.id, this.state )
+      this.props.toggleEdit()
+    } else {
+      this.props.addPokemon(this.state)
+      this.props.toggleAdd()
+    }
     this.setState({ 
       name: '', 
       pokemon_type: '', 
