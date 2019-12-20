@@ -7,6 +7,11 @@ class PokemonShow extends Component {
     return(
       <>
         <h1>{name}</h1>
+        <p>Type:{pokemon_type}</p>
+        <p>Moves:{moves}</p>
+        <p>Level:{level}</p>
+        <p>Weight:{weight}</p>
+        <p>Height:{height}</p>
       </>
     )
   }
