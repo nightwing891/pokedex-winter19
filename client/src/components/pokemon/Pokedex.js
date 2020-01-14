@@ -1,67 +1,22 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import List from './List';
 import PokeForm from './PokeForm';
+import { PokemonConsumer } from '../../providers/PokemonProvider';
+import { Btn } from './pokemonStyles';
+
+// const styles = {
+//   btnStyle: {
+//     marginLeft: '5px',
+//     color: 'blue',
+//     background: 'green'
+//   }
+// }
+
 
 class Pokedex extends Component {
-  state = { pokemons: [], adding: false }
-
-  componentDidMount() {
-    // grabs all the pokemon on the rails end
-    axios.get('/api/pokemons')
-      .then( res => {
-        this.setState({ pokemons: res.data })
-      })
-      .catch( err => {
-        console.log(err)
-      })
-  } 
+  state = { pokemons: this.props.pokemons, adding: false }
 
   toggleAdd = () => this.setState({ adding: !this.state.adding })
-
-  addPokemon = (pokemon) => {
-    // add to the back end
-    axios.post('/api/pokemons', pokemon)
-      .then( res => {
-        // add to our front end / state
-        const { pokemons } = this.state
-        this.setState({ pokemons: [...pokemons, res.data]})
-      })
-      .catch( err => {
-        console.log(err)
-      })
-  }
-
-  updatePokemon = (id, pokemon) => {
-    // update to the back end
-    axios.put(`/api/pokemons/${id}`, pokemon)
-      .then( res => {
-        // update it in our state
-        const pokemons = this.state.pokemons.map( p => {
-          if (p.id === id) {
-            return res.data
-          }
-          return p 
-        })
-        this.setState({ pokemons })
-      })
-      .catch( err => {
-        console.log(err)
-      })
-  }
-
-  releasePokemon = (id) => {
-    // delete in the back end
-    axios.delete(`/api/pokemons/${id}`)
-      .then(res => {
-        // delete in the state
-        const { pokemons } = this.state
-        this.setState({ pokemons: pokemons.filter( p => p.id !== id)})
-      })
-      .catch( err => {
-        console.log(err)
-      }) 
-  }
 
   render() {
     const { adding } = this.state
@@ -70,14 +25,27 @@ class Pokedex extends Component {
         <h1>Pokedex</h1>
         {
           adding ?
-          <PokeForm addPokemon={this.addPokemon} toggleAdd={this.toggleAdd} />
+          <PokeForm toggleAdd={this.toggleAdd} />
           :
-          <button onClick={this.toggleAdd}>Add Pokemon</button>
+          // <button onClick={this.toggleAdd}>Add Pokemon</button>
+          <Btn onClick={this.toggleAdd}>Add Pokemon</Btn>
         }
-        <List pokemons={this.state.pokemons} releasePokemon={this.releasePokemon} updatePokemon={this.updatePokemon} />
+        <List pokemons={this.state.pokemons} />
       </>
     )
   }
 }
 
-export default Pokedex;
+const ConnectedPokedex = () => {
+  return(
+    <PokemonConsumer>
+      { value =>(
+        <Pokedex
+          pokemons={value.pokemons}
+        />
+      )}
+    </PokemonConsumer>
+  )
+}
+
+export default ConnectedPokedex;
